@@ -101,6 +101,8 @@ module.exports = {
         nomenklatur,
         anggaranAwal,
         prioritas,
+        dibawakanRapatkoordinasi,
+        tercantumDalamLaporan,
         prioritasNasional,
         prioritasProgram,
         prioritasKegiatan,
@@ -118,6 +120,8 @@ module.exports = {
         nomenklatur,
         anggaranAwal,
         prioritas,
+        dibawakanRapatkoordinasi,
+        tercantumDalamLaporan,
         prioritasNasional,
         prioritasProgram,
         prioritasKegiatan,
@@ -128,7 +132,7 @@ module.exports = {
         // totalAnggaranTambahan: "",
         totalAnggaranKomponen,
       };
-      if (nama.length < 1 || unitKerja.length < 1) {
+      if (nama < 1 || unitKerja.length < 1) {
         return helperWrapper.response(
           res,
           400,
@@ -138,6 +142,109 @@ module.exports = {
       }
       const result = await productModel.postProduct(setData);
       return helperWrapper.response(res, 200, "Success post product", result);
+    } catch (error) {
+      return helperWrapper.response(
+        res,
+        400,
+        `Bad request (${error.message})`,
+        null
+      );
+    }
+  },
+  updateProduct: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const checkId = await productModel.getProductById(id);
+      if (checkId.length < 1) {
+        return helperWrapper.response(
+          res,
+          404,
+          `Product by id ${id} not found !`,
+          null
+        );
+      }
+      const {
+        skor,
+        nama,
+        unitKerja,
+        idSekretariatDeputi,
+        nomenklatur,
+        anggaranAwal,
+        prioritas,
+        dibawakanRapatkoordinasi,
+        tercantumDalamLaporan,
+        prioritasNasional,
+        prioritasProgram,
+        prioritasKegiatan,
+        janjiPresiden,
+        majorProject,
+        mean,
+        status,
+        // totalAnggaranTambahan: "",
+        totalAnggaranKomponen,
+      } = req.body;
+      const setData = {
+        skor,
+        nama,
+        unitKerja,
+        idSekretariatDeputi,
+        nomenklatur,
+        anggaranAwal,
+        prioritas,
+        dibawakanRapatkoordinasi,
+        tercantumDalamLaporan,
+        prioritasNasional,
+        prioritasProgram,
+        prioritasKegiatan,
+        janjiPresiden,
+        majorProject,
+        mean,
+        status,
+        // totalAnggaranTambahan: "",
+        totalAnggaranKomponen,
+        updatedAt: new Date(Date.now()),
+      };
+      Object.keys(setData).forEach((data) => {
+        if (!setData[data]) {
+          delete setData[data];
+        }
+      });
+      const result = await productModel.updateProduct(setData, id);
+      return helperWrapper.response(
+        res,
+        200,
+        "Success update product data",
+        result
+      );
+    } catch (error) {
+      return helperWrapper.response(
+        res,
+        400,
+        `Bad request (${error.message})`,
+        null
+      );
+    }
+  },
+  deleteProduct: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const checkId = await productModel.getProductById(id);
+      if (checkId.length < 1) {
+        return helperWrapper.response(
+          res,
+          404,
+          `Product by id ${id} not found !`,
+          null
+        );
+      }
+
+      const result = await productModel.deleteProduct(id);
+      return helperWrapper.response(
+        res,
+        200,
+        `Success delete product data by id ${id}`,
+        result
+      );
     } catch (error) {
       return helperWrapper.response(
         res,

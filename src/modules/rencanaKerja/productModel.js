@@ -45,18 +45,48 @@ module.exports = {
     }),
   postProduct: (data) =>
     new Promise((resolve, reject) => {
-      connection.query("INSERT INTO rencanaKinerja SET ?", data, (error, result) => {
+      connection.query(
+        "INSERT INTO rencanaKinerja SET ?",
+        data,
+        (error, result) => {
+          if (!error) {
+            const newResult = {
+              id: result.insertId,
+              ...data,
+            };
+            resolve(newResult);
+          } else {
+            reject(new Error(`SQL : ${error.sqlMessage}`));
+          }
+        }
+      );
+    }),
+  updateProduct: (data, id) =>
+    new Promise((resolve, reject) => {
+      connection.query(
+        "UPDATE rencanaKinerja SET ? WHERE id = ?",
+        [data, id],
+        (error) => {
+          if (!error) {
+            const newResult = {
+              id,
+              ...data,
+            };
+            resolve(newResult);
+          } else {
+            reject(new Error(`SQL : ${error.sqlMessage}`));
+          }
+        }
+      );
+    }),
+  deleteProduct: (id) =>
+    new Promise((resolve, reject) => {
+      connection.query("DELETE FROM rencanaKinerja WHERE id = ?", id, (error) => {
         if (!error) {
-          const newResult = {
-            id: result.insertId,
-            ...data,
-          };
-          resolve(newResult);
+          resolve(id);
         } else {
           reject(new Error(`SQL : ${error.sqlMessage}`));
         }
       });
     }),
-
-
 };
