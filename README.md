@@ -1,4 +1,4 @@
-# Coffee-Brings API
+# API
 
 <!-- NAVIGATION -->
 <ol>
@@ -50,13 +50,12 @@ Before installing, you must be install [nodejs and npm.](https://nodejs.org)
 1. Clone this repo
 
 ```sh
-git clone https://github.com/AhmadZaky19/backend-coffebrings.git
+git clone 
 ```
 
 2. Install NPM package
 
 ```sh
-cd backend-coffebrings
 npm install
 ```
 
@@ -98,16 +97,3 @@ MIDTRANS_CLIENT_KEY=yourmidtransclientkey -->
 ```sh
 npm run dev
 ```
-
-<!-- Contributors -->
-
-## Contributors
-
-- (Fullstack) Walid Nurudin [https://github.com/Walidnurudin](https://github.com/Walidnurudin)
-- (Frontend) Fajri Putra [https://github.com/fajriputra](https://github.com/fajriputra)
-- (Frontend) Fikri Nadzif [https://github.com/LepakBoy](https://github.com/LepakBoy)
-- (Backend) Fachri Maulana [https://github.com/mrfachri19](https://github.com/mrfachri19)
-- (Backend) Ahmad Zaky [https://github.com/AhmadZaky19](https://github.com/AhmadZaky19)
-- (Backend) Noviana [https://github.com/Novianaa](https://github.com/Novianaa)
-
-Project Link: [https://github.com/AhmadZaky19/backend-coffebrings](https://github.com/AhmadZaky19/backend-coffebrings)

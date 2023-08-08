@@ -8,8 +8,9 @@ module.exports = {
     try {
       let { search, sort, order, page, limit } = req.query;
       page = Number(page) || 1;
-      limit = Number(limit) || 20;
       search = search || "";
+      const defaultLimit = await productModel.getCountProduct(search);
+      limit = Number(limit) || defaultLimit;
       sort = sort || "nama";
       order = order || "asc";
       let offset = page * limit - limit;
