@@ -6,7 +6,7 @@ module.exports = {
     try {
       let { sort, order, page, limit } = req.query;
       page = Number(page) || 1;
-      limit = Number(limit) || 3;
+      limit = Number(limit) || 100;
       sort = sort || "label";
       order = order || "asc";
       let offset = page * limit - limit;
