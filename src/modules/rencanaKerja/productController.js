@@ -111,6 +111,7 @@ module.exports = {
         majorProject,
         mean,
         status,
+        penilai,
         // totalAnggaranTambahan: "",
         totalAnggaranKomponen,
       } = req.body;
@@ -130,6 +131,7 @@ module.exports = {
         majorProject,
         mean,
         status,
+        penilai,
         // totalAnggaranTambahan: "",
         totalAnggaranKomponen,
       };
@@ -181,6 +183,7 @@ module.exports = {
         majorProject,
         mean,
         status,
+        penilai,
         // totalAnggaranTambahan: "",
         totalAnggaranKomponen,
       } = req.body;
@@ -201,6 +204,7 @@ module.exports = {
         majorProject,
         mean,
         status,
+        penilai,
         // totalAnggaranTambahan: "",
         totalAnggaranKomponen,
         updatedAt: new Date(Date.now()),

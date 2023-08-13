@@ -4,6 +4,67 @@ const deleteFile = require("../../helpers/deleteFile");
 const userModel = require("./userModel");
 
 module.exports = {
+  getAllUsers: async (req, res) => {
+    try {
+      let { search, sort, order, page, limit } = req.query;
+      page = Number(page) || 1;
+      search = search || "";
+      const defaultLimit = await userModel.getCountProduct(search);
+      limit = Number(limit) || defaultLimit;
+      sort = sort || "nilai";
+      order = order || "asc";
+      let offset = page * limit - limit;
+      const totalData = await userModel.getCountProduct(search);
+      const totalPage = Math.ceil(totalData / limit);
+      if (page > totalPage) {
+        offset = 0;
+        page = 1;
+      }
+      const pageInfo = {
+        page,
+        totalPage,
+        limit,
+        totalData,
+      };
+      const result = await userModel.getAllProduct(
+        search,
+        sort,
+        order,
+        limit,
+        offset
+      );
+      const newResult = result.map((item) => {
+        const data = {
+          ...item,
+        };
+        return data;
+      });
+      if (newResult.length < 1) {
+        return helperWrapper.response(
+          res,
+          200,
+          "user not found",
+          newResult,
+          pageInfo
+        );
+      }
+
+      return helperWrapper.response(
+        res,
+        200,
+        "Success get user",
+        newResult,
+        pageInfo
+      );
+    } catch (error) {
+      return helperWrapper.response(
+        res,
+        400,
+        `Bad request (${error.message})`,
+        null
+      );
+    }
+  },
   getUserById: async (req, res) => {
     try {
       const { id } = req.params;
@@ -37,16 +98,7 @@ module.exports = {
   updateProfile: async (req, res) => {
     try {
       const { id } = req.params;
-      const {
-        displayName,
-        firstName,
-        lastName,
-        email,
-        phoneNumber,
-        deliveryAddress,
-        gender,
-        birthDay,
-      } = req.body;
+      const { nilai } = req.body;
 
       const user = await userModel.getUserById(id);
       if (user.length < 1) {
@@ -59,14 +111,7 @@ module.exports = {
       }
 
       const setData = {
-        displayName,
-        firstName,
-        lastName,
-        email,
-        phoneNumber,
-        deliveryAddress,
-        gender,
-        birthDay,
+        nilai,
         updatedAt: new Date(Date()),
       };
 
@@ -88,115 +133,115 @@ module.exports = {
       );
     }
   },
-  updateImage: async (req, res) => {
-    try {
-      const { id } = req.decodeToken;
+  // updateImage: async (req, res) => {
+  //   try {
+  //     const { id } = req.decodeToken;
 
-      const user = await userModel.getUserById(id);
-      if (user.length < 1) {
-        return helperWrapper.response(
-          res,
-          404,
-          `User by id ${id} not found`,
-          null
-        );
-      }
+  //     const user = await userModel.getUserById(id);
+  //     if (user.length < 1) {
+  //       return helperWrapper.response(
+  //         res,
+  //         404,
+  //         `User by id ${id} not found`,
+  //         null
+  //       );
+  //     }
 
-      if (user[0].image) {
-        deleteFile(`public/uploads/user/${user[0].image}`);
-      }
+  //     if (user[0].image) {
+  //       deleteFile(`public/uploads/user/${user[0].image}`);
+  //     }
 
-      const setData = {
-        image: req.file ? req.file.filename : null,
-        updatedAt: new Date(Date()),
-      };
+  //     const setData = {
+  //       image: req.file ? req.file.filename : null,
+  //       updatedAt: new Date(Date()),
+  //     };
 
-      const result = await userModel.updateProfile(setData, id);
-      return helperWrapper.response(
-        res,
-        200,
-        "Success update image user",
-        result
-      );
-    } catch (error) {
-      return helperWrapper.response(
-        res,
-        400,
-        `Bad request : ${error.message}`,
-        null
-      );
-    }
-  },
+  //     const result = await userModel.updateProfile(setData, id);
+  //     return helperWrapper.response(
+  //       res,
+  //       200,
+  //       "Success update image user",
+  //       result
+  //     );
+  //   } catch (error) {
+  //     return helperWrapper.response(
+  //       res,
+  //       400,
+  //       `Bad request : ${error.message}`,
+  //       null
+  //     );
+  //   }
+  // },
 
-  updatePassword: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { newPassword, confirmPassword } = req.body;
+  // updatePassword: async (req, res) => {
+  //   try {
+  //     const { id } = req.params;
+  //     const { newPassword, confirmPassword } = req.body;
 
-      const user = await userModel.getUserById(id);
-      if (user.length < 1) {
-        return helperWrapper.response(
-          res,
-          404,
-          `User by id ${id} not found`,
-          null
-        );
-      }
+  //     const user = await userModel.getUserById(id);
+  //     if (user.length < 1) {
+  //       return helperWrapper.response(
+  //         res,
+  //         404,
+  //         `User by id ${id} not found`,
+  //         null
+  //       );
+  //     }
 
-      if (newPassword !== confirmPassword) {
-        return helperWrapper.response(
-          res,
-          400,
-          `Password does not match`,
-          null
-        );
-      }
+  //     if (newPassword !== confirmPassword) {
+  //       return helperWrapper.response(
+  //         res,
+  //         400,
+  //         `Password does not match`,
+  //         null
+  //       );
+  //     }
 
-      const salt = await bcryptjs.genSalt(10);
-      const passwordHash = await bcryptjs.hash(newPassword, salt);
+  //     const salt = await bcryptjs.genSalt(10);
+  //     const passwordHash = await bcryptjs.hash(newPassword, salt);
 
-      const setData = { password: passwordHash };
+  //     const setData = { password: passwordHash };
 
-      const result = await userModel.updateProfile(setData, id);
+  //     const result = await userModel.updateProfile(setData, id);
 
-      return helperWrapper.response(res, 200, `Success update password`, {
-        id: result.id,
-      });
-    } catch (error) {
-      return helperWrapper.response(
-        res,
-        400,
-        `Bad request : ${error.message}`,
-        null
-      );
-    }
-  },
-  deleteImage: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const checkId = await userModel.getUserById(id);
-      if (checkId.length < 1) {
-        return helperWrapper.response(
-          res,
-          404,
-          `Data by id ${id} not found !`,
-          null
-        );
-      }
-      await userModel.updateProfile({ image: null, updatedAt: new Date() }, id);
+  //     return helperWrapper.response(res, 200, `Success update password`, {
+  //       id: result.id,
+  //     });
+  //   } catch (error) {
+  //     return helperWrapper.response(
+  //       res,
+  //       400,
+  //       `Bad request : ${error.message}`,
+  //       null
+  //     );
+  //   }
+  // },
+  // deleteImage: async (req, res) => {
+  //   try {
+  //     const { id } = req.params;
+  //     const checkId = await userModel.getUserById(id);
+  //     if (checkId.length < 1) {
+  //       return helperWrapper.response(
+  //         res,
+  //         404,
+  //         `Data by id ${id} not found !`,
+  //         null
+  //       );
+  //     }
+  //     await userModel.updateProfile({ image: null, updatedAt: new Date() }, id);
 
-      if (checkId[0].image) {
-        deleteFile(`../../../public/uploads/promo/${checkId[0].image}`);
-      }
+  //     if (checkId[0].image) {
+  //       deleteFile(`../../../public/uploads/promo/${checkId[0].image}`);
+  //     }
 
-      return helperWrapper.response(res, 200, "Success delete image", { id });
-    } catch (error) {
-      return helperWrapper.response(
-        res,
-        400,
-        `Bad Request${error.message ? " (" + error.message + ")" : ""}`,
-        null
-      );
-    }
-  },
+  //     return helperWrapper.response(res, 200, "Success delete image", { id });
+  //   } catch (error) {
+  //     return helperWrapper.response(
+  //       res,
+  //       400,
+  //       `Bad Request${error.message ? " (" + error.message + ")" : ""}`,
+  //       null
+  //     );
+  //   }
+  // },
 };
