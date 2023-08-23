@@ -184,7 +184,7 @@ module.exports = {
         mean,
         status,
         penilai,
-        // totalAnggaranTambahan: "",
+        totalAnggaranTambahan,
         totalAnggaranKomponen,
       } = req.body;
       const setData = {
@@ -205,7 +205,7 @@ module.exports = {
         mean,
         status,
         penilai,
-        // totalAnggaranTambahan: "",
+        totalAnggaranTambahan,
         totalAnggaranKomponen,
         updatedAt: new Date(Date.now()),
       };

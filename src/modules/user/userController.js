@@ -94,7 +94,6 @@ module.exports = {
       );
     }
   },
-
   updateProfile: async (req, res) => {
     try {
       const { id } = req.params;
